@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin & Win – Namaste Zumba</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+--gold: #FFD700; --orange: #FF6B35; --pink: #FF3CAC;
+--purple: #00A550; --teal: #00E676; --dark: #051A0D;
+}
+body {
+font-family: 'Nunito', sans-serif;
+background: #051A0D; color: white;
+min-height: 100vh; overflow-x: hidden;
+}
+body::before {
+content: ''; position: fixed; inset: 0;
+background:
+radial-gradient(ellipse at 15% 15%, #7B2FBE44 0%, transparent 45%),
+radial-gradient(ellipse at 85% 85%, #FF3CAC33 0%, transparent 45%),
+radial-gradient(ellipse at 50% 50%, #FF6B3511 0%, transparent 60%);
+z-index: 0; pointer-events: none;
+}
+.container { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 16px 16px 40px; }
+
+/* ── HEADER ── */
+.header { text-align: center; padding: 24px 0 8px; }
+.top-badge {
+display: inline-block;
+background: linear-gradient(135deg, var(--pink), var(--orange));
+padding: 5px 18px; border-radius: 50px;
+font-size: 12px; font-weight: 800; letter-spacing: 2px;
+text-transform: uppercase; margin-bottom: 12px;
+animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+.header h1 {
+font-family: 'Baloo 2', cursive;
+font-size: clamp(1.8rem, 7vw, 3rem); font-weight: 800; line-height: 1.1;
+background: linear-gradient(135deg, #FFD700, #FF6B35, #FF3CAC);
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.header p { margin-top: 8px; color: #bbb; font-size: 0.92rem; font-weight: 600; }
+
+/* ── STEPS BAR ── */
+.steps-bar {
+display: flex; gap: 8px; margin: 20px 0 8px;
+background: #ffffff08; border: 1px solid #ffffff12;
+border-radius: 18px; padding: 16px 14px;
+overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.steps-bar::-webkit-scrollbar { display: none; }
+.step-item {
+display: flex; flex-direction: column; align-items: center;
+gap: 6px; min-width: 68px; flex: 1;
+position: relative;
+}
+.step-item:not(:last-child)::after {
+content: '→'; position: absolute; right: -10px; top: 10px;
+color: #ffffff30; font-size: 14px;
+}
+.step-circle {
+width: 38px; height: 38px; border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 1.1rem;
+background: linear-gradient(135deg, #ffffff15, #ffffff08);
+border: 1.5px solid #ffffff20;
+}
+.step-item.active .step-circle {
+background: linear-gradient(135deg, var(--purple), var(--pink));
+border-color: transparent;
+box-shadow: 0 0 14px #FF3CAC55;
+}
+.step-label { font-size: 10px; font-weight: 700; color: #888; text-align: center; line-height: 1.3; }
+.step-item.active .step-label { color: var(--gold); }
+
+/* ── FORM ── */
+#formSection {
+margin: 10px 0;
+background: linear-gradient(135deg, #1a1535, #130f2a);
+border: 1.5px solid #FF3CAC33; border-radius: 22px;
+padding: 28px 22px;
+box-shadow: 0 0 50px #FF3CAC18, 0 20px 60px #00000044;
+}
+.form-icon { font-size: 2.5rem; text-align: center; margin-bottom: 8px; }
+.form-title {
+font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800;
+text-align: center; margin-bottom: 4px;
+background: linear-gradient(135deg, var(--gold), var(--orange));
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.form-sub { text-align: center; color: #888; font-size: 0.83rem; margin-bottom: 22px; }
+.input-group { margin-bottom: 16px; }
+.input-group label {
+display: block; font-size: 0.78rem; font-weight: 800;
+color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+}
+.input-group input {
+width: 100%; padding: 13px 16px;
+background: #ffffff0c; border: 1.5px solid #ffffff18;
+border-radius: 12px; color: white; font-size: 1rem;
+font-family: 'Nunito', sans-serif; outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-group input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px #FF3CAC1a; }
+.input-group input::placeholder { color: #555; }
+.error-msg { color: #ff6b6b; font-size: 0.78rem; margin-top: 5px; display: none; }
+.submit-btn {
+width: 100%; padding: 15px;
+font-family: 'Baloo 2', cursive; font-size: 1.15rem; font-weight: 800;
+background: linear-gradient(135deg, var(--orange), var(--pink));
+color: white; border: none; border-radius: 14px;
+cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
+box-shadow: 0 6px 28px #FF6B3544; transition: all 0.2s; margin-top: 6px;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 36px #FF3CAC55; }
+.submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ── WHEEL SECTION ── */
+#wheelSection { display: none; }
+.welcome-bar {
+text-align: center; margin: 10px 0 16px;
+background: linear-gradient(135deg, #FFD70012, #FF6B3508);
+border: 1px solid #FFD70030; border-radius: 14px; padding: 11px 18px;
+}
+.welcome-bar span { color: var(--gold); font-weight: 800; font-size: 1rem; }
+.welcome-bar p { color: #aaa; font-size: 0.8rem; margin-top: 2px; }
+
+.wheel-wrapper-outer {
+display: flex; flex-direction: column; align-items: center; gap: 18px; margin: 0 0 24px;
+}
+.wheel-wrapper { position: relative; width: min(340px, 88vw); height: min(340px, 88vw); }
+.wheel-pointer {
+position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+width: 0; height: 0;
+border-left: 14px solid transparent; border-right: 14px solid transparent;
+border-top: 32px solid var(--gold); z-index: 10;
+filter: drop-shadow(0 0 10px #FFD700cc);
+}
+#wheelCanvas {
+border-radius: 50%;
+box-shadow: 0 0 50px #FF3CAC44, 0 0 100px #7B2FBE22;
+}
+.spin-btn {
+padding: 15px 44px;
+font-family: 'Baloo 2', cursive; font-size: 1.25rem; font-weight: 800;
+background: linear-gradient(135deg, var(--orange), var(--pink));
+color: white; border: none; border-radius: 60px;
+cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
+box-shadow: 0 8px 32px #FF6B3555; transition: all 0.2s;
+}
+.spin-btn:hover:not(:disabled) { transform: translateY(-3px) scale(1.04); box-shadow: 0 12px 40px #FF3CAC66; }
+.spin-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── RESULT CARD ── */
+.result-card {
+display: none; margin: 0 auto;
+background: linear-gradient(135deg, #1a1535, #130f2a);
+border: 2px solid var(--gold); border-radius: 20px;
+padding: 22px 20px; text-align: center;
+max-width: 400px; width: 100%;
+box-shadow: 0 0 40px #FFD70033;
+animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn { from{transform:scale(0.75);opacity:0} to{transform:scale(1);opacity:1} }
+.result-card.show { display: block; }
+.result-card .win-label { font-size: 12px; letter-spacing: 2px; color: var(--gold); font-weight: 800; text-transform: uppercase; }
+.result-card .win-title { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; margin: 8px 0 4px; color: white; }
+.result-card .win-desc { color: #aaa; font-size: 0.9rem; margin-bottom: 14px; line-height: 1.5; }
+.confetti-icon { font-size: 2.2rem; margin-bottom: 4px; }
+.claim-note {
+background: #FFD70015; border: 1px solid #FFD70033;
+border-radius: 10px; padding: 10px 14px;
+font-size: 0.82rem; color: #FFD700; font-weight: 700;
+margin-bottom: 14px; line-height: 1.5;
+}
+.wa-claim-btn {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+width: 100%; padding: 14px;
+background: #25D366; color: white;
+border: none; border-radius: 12px;
+font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+cursor: pointer; text-decoration: none;
+box-shadow: 0 4px 20px #25D36644; transition: all 0.2s;
+}
+.wa-claim-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px #25D36666; }
+
+/* ── OFFERS GRID ── */
+.offers-section { margin: 24px 0; }
+.section-title {
+font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 800;
+text-align: center; margin-bottom: 16px;
+background: linear-gradient(135deg, var(--gold), var(--orange));
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.offers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:420px){ .offers-grid { grid-template-columns: 1fr; } }
+.offer-card {
+background: linear-gradient(135deg, #1e1640, #150f2e);
+border-radius: 16px; padding: 16px 14px;
+border: 1px solid #ffffff10; transition: transform 0.2s, border-color 0.2s;
+cursor: default;
+}
+.offer-card:hover { transform: translateY(-3px); border-color: #ffffff22; }
+.offer-badge {
+display: inline-block; padding: 3px 12px; border-radius: 50px;
+font-size: 11px; font-weight: 800; text-transform: uppercase;
+margin-bottom: 10px; letter-spacing: 0.5px;
+}
+.offer-card h3 { font-size: 0.95rem; font-weight: 800; color: white; margin-bottom: 5px; }
+.offer-price { font-family: 'Baloo 2', cursive; font-size: 1.45rem; font-weight: 800; color: var(--gold); margin-bottom: 3px; }
+.offer-desc { font-size: 0.74rem; color: #777; line-height: 1.5; }
+.offer-full { grid-column: 1/-1; }
+
+/* profit tag */
+.profit-tag {
+display: inline-block;
+background: linear-gradient(135deg, #00A550, #00E676);
+color: #051A0D; font-size: 10px; font-weight: 800;
+padding: 2px 10px; border-radius: 50px;
+margin-top: 5px; letter-spacing: 0.5px;
+}
+
+/* ── WHATSAPP SECTION ── */
+.wa-section {
+margin: 24px 0;
+background: linear-gradient(135deg, #0d2818, #0a1f12);
+border: 1.5px solid #25D36633; border-radius: 20px;
+padding: 24px 20px; text-align: center;
+}
+.wa-section h2 { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+.wa-number {
+font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800;
+color: #25D366; letter-spacing: 2px; margin: 8px 0;
+}
+.wa-instructions {
+background: #ffffff08; border-radius: 12px;
+padding: 14px 16px; margin: 14px 0;
+text-align: left;
+}
+.wa-instructions p { font-size: 0.85rem; color: #bbb; line-height: 1.8; }
+.wa-instructions strong { color: var(--gold); }
+.wa-main-btn {
+display: flex; align-items: center; justify-content: center; gap: 10px;
+width: 100%; padding: 15px;
+background: #25D366; color: white;
+border-radius: 14px; text-decoration: none;
+font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+box-shadow: 0 4px 24px #25D36644; transition: all 0.2s;
+}
+.wa-main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px #25D36666; }
+.wa-main-btn svg { width: 22px; height: 22px; fill: white; }
+
+/* ── LOADING ── */
+.loading-overlay {
+display: none; position: fixed; inset: 0;
+background: #051A0Dee; z-index: 100;
+flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+}
+.loading-overlay.show { display: flex; }
+.spinner {
+width: 46px; height: 46px; border: 4px solid #ffffff18;
+border-top-color: var(--pink); border-radius: 50%;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading-text { color: white; font-weight: 700; font-size: 0.95rem; }
+
+.divider { height: 1px; background: #ffffff0c; margin: 6px 0; }
+.footer { text-align:center; padding: 16px; color: #444; font-size: 0.75rem; }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+<div class="spinner"></div>
+<div class="loading-text">Saving your details... ✨</div>
+</div>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+<div class="top-badge">🔥 Limited Time Offer</div>
+<h1>Spin &amp; Win<br>Your Fitness Deal!</h1>
+<p>💃 Zumba &nbsp;•&nbsp; 🪢 Exclusive Bundles &nbsp;•&nbsp; Upto 65% OFF</p>
+</div>
+
+<!-- STEPS BAR -->
+<div class="steps-bar" id="stepsBar">
+<div class="step-item active" id="step1item">
+<div class="step-circle">📝</div>
+<div class="step-label">Fill Details</div>
+</div>
+<div class="step-item" id="step2item">
+<div class="step-circle">🎡</div>
+<div class="step-label">Spin Wheel</div>
+</div>
+<div class="step-item" id="step3item">
+<div class="step-circle">📸</div>
+<div class="step-label">Screenshot</div>
+</div>
+<div class="step-item" id="step4item">
+<div class="step-circle">💬</div>
+<div class="step-label">WhatsApp Us</div>
+</div>
+<div class="step-item" id="step5item">
+<div class="step-circle">🎉</div>
+<div class="step-label">Get Activated!</div>
+</div>
+</div>
+
+<!-- OFFERS GRID -->
+<div class="offers-section">
+<div class="section-title">🏷️ Available Offers — Spin to Win!</div>
+<div class="offers-grid">
+
+<!-- Card 1 -->
+<div class="offer-card">
+<div class="offer-badge" style="background:#00A550;color:white;">🔥 65% OFF</div>
+<h3>Annual Membership</h3>
+<div class="offer-price">₹3,999/-</div>
+<div class="offer-desc">
+<s style="color:#888;">₹11,998</s> — Best Annual Fitness Deal of the Year!
+</div>
+</div>
+
+<!-- Card 2 — UPDATED -->
+<div class="offer-card">
+<div class="offer-badge" style="background:#FF3CAC;color:white;">🎁 BEST BUNDLE</div>
+<h3>Annual + Pullover Rope</h3>
+<div class="offer-price">₹4,449/-</div>
+<div class="offer-desc">
+Annual Membership + Pullover Rope — Pay Smart, Save More!
+</div>
+<span class="profit-tag">💰 Instant Profit of ₹149 on Rope!</span>
+</div>
+
+<!-- Card 3 — UPDATED with strikethrough -->
+<div class="offer-card">
+<div class="offer-badge" style="background:#FFD700;color:#051A0D;">💃 30% OFF</div>
+<h3>6 Month Combo</h3>
+<div class="offer-price">₹3,499/-</div>
+<div class="offer-desc">
+<s style="color:#888;">₹4,499</s> — 3 Months Zumba + 3 Months Yoga — Double the Fitness, Half the Price!
+</div>
+</div>
+
+<!-- Card 4 — UPDATED -->
+<div class="offer-card">
+<div class="offer-badge" style="background:#00E676;color:#051A0D;">🪢 BUNDLE DEAL</div>
+<h3>6 Month + Pullover Rope</h3>
+<div class="offer-price">₹3,999/-</div>
+<div class="offer-desc">
+6 Month Membership + Pullover Rope — Smarter Choice, Real Savings!
+</div>
+<span class="profit-tag">💰 Instant Profit of ₹199 on Rope!</span>
+</div>
+
+<!-- Card 5 -->
+<div class="offer-card">
+<div class="offer-badge" style="background:#FF6B35;color:white;">33% OFF</div>
+<h3>3 Month Membership</h3>
+<div class="offer-price">₹1,999/-</div>
+<div class="offer-desc">
+<s style="color:#888;">₹2,997</s> — Perfect Starter Plan to Kick Off Your Fitness Journey!
+</div>
+</div>
+
+<!-- Card 6 -->
+<div class="offer-card offer-full">
+<div class="offer-badge" style="background:#7B2FBE;color:white;">♾️ 30% OFF</div>
+<h3>Lifetime Membership + FREE Pullover Rope</h3>
+<div class="offer-price">₹6,999/-</div>
+<div class="offer-desc">
+<s style="color:#888;">₹9,999</s> — Pay Once, Dance Forever! Lifetime Access + Pullover Rope Worth ₹599 Absolutely FREE!
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- STEP 1: FORM -->
+<div id="formSection">
+<div class="form-icon">🎯</div>
+<div class="form-title">Step 1 — Enter Your Details</div>
+<div class="form-sub">Fill in your details to unlock the Spin Wheel!</div>
+<div class="input-group">
+<label>👤 Full Name</label>
+<input type="text" id="userName" placeholder="Enter your full name" maxlength="60" />
+<div class="error-msg" id="nameError">⚠️ Please enter your name</div>
+</div>
+<div class="input-group">
+<label>📱 Mobile Number</label>
+<input type="tel" id="userPhone" placeholder="10-digit mobile number" maxlength="10" />
+<div class="error-msg" id="phoneError">⚠️ Please enter a valid 10-digit number</div>
+</div>
+<button class="submit-btn" id="submitBtn" onclick="submitForm()">🎡 Unlock My Spin Wheel!</button>
+</div>
+
+<!-- STEP 2: WHEEL -->
+<div id="wheelSection">
+
+<div class="welcome-bar">
+<span id="welcomeName">Welcome! 👋</span>
+<p>Spin the wheel and reveal your exclusive offer! 🎉</p>
+</div>
+
+<div class="wheel-wrapper-outer">
+<div class="wheel-wrapper">
+<div class="wheel-pointer"></div>
+<canvas id="wheelCanvas"></canvas>
+</div>
+<button class="spin-btn" id="spinBtn">🎯 Spin Now!</button>
+
+<!-- RESULT -->
+<div class="result-card" id="resultCard">
+<div class="confetti-icon" id="confettiIcon">🎉</div>
+<div class="win-label">🎊 Congratulations! You Won!</div>
+<div class="win-title" id="winTitle">—</div>
+<div class="win-desc" id="winDesc">—</div>
+<div class="claim-note">
+📸 <strong>Step 3:</strong> Take a screenshot of this screen now!<br>
+💬 <strong>Step 4:</strong> Tap the WhatsApp button below to claim your offer!
+</div>
+<a class="wa-claim-btn" id="waClaimBtn" href="#" target="_blank">
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+</svg>
+WhatsApp Us — Claim Your Offer!
+</a>
+</div>
+</div>
+
+</div><!-- end wheelSection -->
+
+<!-- WHATSAPP INFO SECTION -->
+<div class="wa-section">
+<h2>📲 How to Claim Your Offer</h2>
+<div class="wa-number">+91 73022 44935</div>
+<div class="wa-instructions">
+<p>
+✅ <strong>Step 1:</strong> Fill your details &amp; spin the wheel<br>
+📸 <strong>Step 2:</strong> Take a <strong>screenshot</strong> of your winning offer<br>
+💬 <strong>Step 3:</strong> WhatsApp us the screenshot with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;👉 <strong>Your Full Name</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;👉 <strong>Your Registered Mobile Number</strong><br>
+🎉 <strong>Step 4:</strong> Our team will activate your offer <strong>within 24 hours!</strong>
+</p>
+</div>
+<a class="wa-main-btn" id="waMainBtn" href="https://wa.me/917302244935?text=Hi!%20I%20want%20to%20know%20more%20about%20the%20fitness%20offers!" target="_blank">
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+</svg>
+WhatsApp Us &amp; Claim Your Offer!
+</a>
+</div>
+
+<div class="footer">⚡ Limited Time Offer &nbsp;•&nbsp; Terms &amp; Conditions Apply &nbsp;•&nbsp; Namaste Zumba</div>
+
+</div><!-- end container -->
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKntwZf4YHbLJZonXuvuFRh6nS-EughSZYLIuxxZpaTK_n2WAKyySJJoFRAjYGEU0Y/exec";
+const WHATSAPP_NUMBER = "917302244935";
+
+const segments = [
+{
+label: "65% OFF\n₹3,999/-",
+desc: "Annual Membership @ ₹3,999/- only! (Was ₹11,998) — Best Annual Fitness Deal of the Year!",
+color: "#00A550", dark: true
+},
+{
+label: "BEST BUNDLE\n₹4,449/-",
+desc: "Annual Membership + Pullover Rope @ ₹4,449/- — Pay Smart, Save More! Instant Profit of ₹149 on Rope!",
+color: "#FF3CAC"
+},
+{
+label: "COMBO\n₹3,499/-",
+desc: "6 Month Combo: 3M Zumba + 3M Yoga @ ₹3,499/- (Was ₹4,499) — Double the Fitness, Half the Price!",
+color: "#FFD700", dark: true
+},
+{
+label: "COMBO+ROPE\n₹3,999/-",
+desc: "6 Month Membership + Pullover Rope @ ₹3,999/- — Smarter Choice, Real Savings! Instant Profit of ₹199 on Rope!",
+color: "#00E676", dark: true
+},
+{
+label: "33% OFF\n₹1,999/-",
+desc: "3 Month Membership @ ₹1,999/- only! (Was ₹2,997) — Perfect Starter Plan to Kick Off Your Fitness Journey!",
+color: "#FF6B35"
+},
+{
+label: "LIFETIME\n₹6,999/-",
+desc: "Lifetime Membership + FREE Pullover Rope @ ₹6,999/- (Was ₹9,999) — Pay Once, Dance Forever! Rope Worth ₹599 FREE!",
+color: "#7B2FBE"
+},
+{
+label: "MEGA DEAL\n₹3,999/-",
+desc: "Annual Membership @ ₹3,999/- — Upto 65% Off! Best Value Fitness Plan of the Year!",
+color: "#FF3CAC"
+},
+{
+label: "Better Luck\nNext Time!",
+desc: "Oops! No offer this time. Better luck next time! 🍀",
+color: "#1a1a1a"
+},
+];
+
+const ARC = (2 * Math.PI) / segments.length;
+let userName = "", userPhone = "", currentAngle = 0, spinning = false;
+
+/* ── STEP HIGHLIGHT ── */
+function setStep(n) {
+[1,2,3,4,5].forEach(i => {
+const el = document.getElementById('step' + i + 'item');
+if (el) el.classList.toggle('active', i === n);
+});
+}
+
+/* ── FORM SUBMIT ── */
+function submitForm() {
+const nv = document.getElementById('userName').value.trim();
+const pv = document.getElementById('userPhone').value.trim();
+let ok = true;
+document.getElementById('nameError').style.display = 'none';
+document.getElementById('phoneError').style.display = 'none';
+if (!nv || nv.length < 2) { document.getElementById('nameError').style.display = 'block'; ok = false; }
+if (!/^[6-9]\d{9}$/.test(pv)) { document.getElementById('phoneError').style.display = 'block'; ok = false; }
+if (!ok) return;
+
+userName = nv; userPhone = pv;
+document.getElementById('submitBtn').disabled = true;
+document.getElementById('loadingOverlay').classList.add('show');
+
+const params = new URLSearchParams({
+name: userName, phone: userPhone,
+time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+action: 'visit'
+});
+fetch(GOOGLE_SCRIPT_URL + "?" + params, { method: 'GET', mode: 'no-cors' })
+.finally(showWheel);
+}
+
+function showWheel() {
+document.getElementById('loadingOverlay').classList.remove('show');
+document.getElementById('formSection').style.display = 'none';
+document.getElementById('wheelSection').style.display = 'block';
+document.getElementById('welcomeName').textContent = "Welcome, " + userName + "! 👋";
+setStep(2);
+updateWaLinks("I am about to spin the wheel!");
+initWheel();
+setTimeout(() => document.getElementById('wheelSection').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function updateWaLinks(offerText) {
+const msg = encodeURIComponent(
+`Hey! 🎉 I just won an offer on the Spin & Win Wheel!\n\nName: ${userName}\nWhatsApp Number: ${userPhone}\n\nOffer Won: ${offerText}\n\nLooking forward to getting started! 💪`
+);
+const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+document.getElementById('waClaimBtn').href = url;
+document.getElementById('waMainBtn').href = url;
+}
+
+/* ── WHEEL INIT ── */
+function initWheel() {
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+const size = Math.min(340, window.innerWidth * 0.88);
+canvas.width = canvas.height = size;
+drawWheel(ctx, size, 0);
+document.getElementById('spinBtn').onclick = () => doSpin(canvas, ctx, size);
+}
+
+function drawWheel(ctx, size, angle) {
+const cx = size / 2, cy = size / 2, r = size / 2 - 5;
+ctx.clearRect(0, 0, size, size);
+segments.forEach((seg, i) => {
+const s = angle + i * ARC, e = s + ARC;
+const g = ctx.createRadialGradient(cx, cy, r * .1, cx, cy, r);
+g.addColorStop(0, lighten(seg.color, 50));
+g.addColorStop(1, seg.color);
+ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, s, e); ctx.closePath();
+ctx.fillStyle = g; ctx.fill();
+ctx.strokeStyle = '#0D0D1A'; ctx.lineWidth = 2.5; ctx.stroke();
+ctx.save();
+ctx.translate(cx, cy); ctx.rotate(s + ARC / 2); ctx.textAlign = 'right';
+const lines = seg.label.split('\n'), fs = size < 280 ? 10 : 12;
+ctx.font = `bold ${fs}px 'Nunito',sans-serif`;
+ctx.fillStyle = seg.dark ? '#0D0D1A' : '#fff';
+ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 4;
+lines.forEach((l, li) => ctx.fillText(l, r - 12, (li - (lines.length - 1) / 2) * (fs + 4)));
+ctx.restore();
+});
+const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+cg.addColorStop(0, '#FFD700'); cg.addColorStop(1, '#FF6B35');
+ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+ctx.fillStyle = cg; ctx.fill();
+ctx.strokeStyle = '#0D0D1A'; ctx.lineWidth = 3; ctx.stroke();
+ctx.fillStyle = '#0D0D1A';
+ctx.font = `bold ${size < 280 ? 10 : 13}px 'Baloo 2',cursive`;
+ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+ctx.fillText('SPIN', cx, cy);
+}
+
+function doSpin(canvas, ctx, size) {
+if (spinning) return;
+spinning = true;
+document.getElementById('spinBtn').disabled = true;
+document.getElementById('resultCard').classList.remove('show');
+setStep(2);
+
+const total = (5 + Math.random() * 5) * 2 * Math.PI + Math.random() * 2 * Math.PI;
+const dur = 4000 + Math.random() * 1500;
+const t0 = performance.now(), a0 = currentAngle;
+
+function ease(t) { return 1 - Math.pow(1 - t, 4); }
+function frame(now) {
+const p = Math.min((now - t0) / dur, 1);
+currentAngle = a0 + total * ease(p);
+drawWheel(ctx, size, currentAngle);
+if (p < 1) { requestAnimationFrame(frame); }
+else { spinning = false; showResult(); }
+}
+requestAnimationFrame(frame);
+}
+
+function showResult() {
+const POINTER_OFFSET = 3 * Math.PI / 2;
+const norm = ((currentAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+const adjusted = ((POINTER_OFFSET - norm) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+const idx = Math.floor(adjusted / ARC) % segments.length;
+const seg = segments[idx];
+
+document.getElementById('winTitle').textContent = seg.label.replace('\n', ' — ');
+document.getElementById('winDesc').textContent = seg.desc;
+document.getElementById('confettiIcon').textContent = idx === 7 ? '😅' : '🎉';
+
+const card = document.getElementById('resultCard');
+card.style.borderColor = seg.color;
+card.classList.add('show');
+document.getElementById('spinBtn').disabled = false;
+
+setStep(idx === 7 ? 2 : 3);
+updateWaLinks(seg.desc);
+
+setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+
+const p = new URLSearchParams({
+name: userName, phone: userPhone, offer: seg.desc,
+time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+action: 'result'
+});
+fetch(GOOGLE_SCRIPT_URL + "?" + p, { method: 'GET', mode: 'no-cors' });
+}
+
+function lighten(hex, amt) {
+const n = parseInt(hex.replace('#', ''), 16);
+return `rgb(${Math.min(255, (n >> 16) + amt)},${Math.min(255, ((n >> 8) & 0xff) + amt)},${Math.min(255, (n & 0xff) + amt)})`;
+}
+
+document.addEventListener('keydown', e => {
+if (e.key === 'Enter' && document.getElementById('formSection').style.display !== 'none') submitForm();
+});
+</script>
+</body>
+</html>
